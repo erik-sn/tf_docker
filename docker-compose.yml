@@ -1,0 +1,11 @@
+  app:
+    build: .
+    volumes:
+      - ./workspace:/workspace
+      - ./notebooks:/notebooks
+    ports:
+      - "8888:8888"
+      - "6006:6006"
+    env_file:
+      - .env
+    restart: "always"
