@@ -1,6 +1,21 @@
 FROM ubuntu:16.04
 
-# Pick up some TF dependencies
+# dependencies for python 3.6
+RUN apt-get update
+RUN apt-get install -y software-properties-common vim
+RUN add-apt-repository ppa:jonathonf/python-3.6
+RUN apt-get update
+
+RUN apt-get install -y build-essential python3.6 python3.6-dev python3-pip python3.6-venv
+RUN apt-get install -y git
+
+# update pip
+RUN python3.6 -m pip install pip --upgrade
+RUN python3.6 -m pip install wheel
+
+RUN echo "alias python=/usr/bin/python3.6\nalias pip=/usr/local/bin/pip3.6" >> ~/.bash_aliases
+
+# Apt dependenciess
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         curl \
@@ -30,10 +45,8 @@ RUN pip3 --no-cache-dir install \
         numpy \
         pandas \
         scipy \
-        sklearn
-
-# Install TensorFlow
-RUN pip3 --no-cache-dir install tensorflow
+        sklearn \
+        tensorflow
 
 # Set up our notebook config.
 COPY jupyter_notebook_config.py /root/.jupyter/
@@ -44,7 +57,6 @@ COPY jupyter_notebook_config.py /root/.jupyter/
 COPY run_jupyter.sh /
 
 WORKDIR "/notebooks"
-
 
 RUN ["chmod", "+x", "/run_jupyter.sh"]
 CMD ["/run_jupyter.sh", "--allow-root"]
